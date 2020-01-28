@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: agrius-ub-fetch-201710
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: agrius-ub-fetch
+        image: agriuseatstweets/ub-fetch:0.0.1
+        args:
+        - python
+        - fetch.py
+        - "201710"
+        resources:
+          requests:
+            memory: "2048Mi"
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/usr/share/keys/key.json"
+          - name: KAFKA_BROKERS
+            value: "kafka:9092"
+          - name: REHYDRATE_TOPIC
+            value: "ubdata"
+        volumeMounts:
+          - name: keys
+            mountPath: /usr/share/keys
+            readOnly: true
+      volumes:
+        - name: keys
+          secret:
+            secretName: agrius-ub-fetch-keys
