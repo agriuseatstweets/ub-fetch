@@ -23,7 +23,7 @@ def build_spark():
     return spark
 
 
-def write(month):
+def write(month, limit = None):
     drivers = os.getenv('KAFKA_BROKERS')
     topic = os.getenv('REHYDRATE_TOPIC')
 
@@ -31,6 +31,9 @@ def write(month):
     spark = build_spark()
     tweets = spark.read.parquet(f'gs://spain-tweets/ub-originals') \
                        .where(f'month = {month}')
+
+    if limit:
+        tweets = tweets.limit(int(limit))
 
     tweets \
         .rdd \
