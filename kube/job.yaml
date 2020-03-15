@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: agrius-ub-fetch-201710
+  name: agrius-ub-fetch-201806
 spec:
   completions: 1
   parallelism: 1
@@ -15,15 +15,15 @@ spec:
         args:
         - python
         - fetch.py
-        - "201710"
+        - "201806"
         resources:
           requests:
-            memory: "2048Mi"
+            memory: "4Gi"
         env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: "/usr/share/keys/key.json"
           - name: KAFKA_BROKERS
-            value: "kafka:9092"
+            value: "hydra-kafka:9092"
           - name: REHYDRATE_TOPIC
             value: "ubdata"
         volumeMounts:
